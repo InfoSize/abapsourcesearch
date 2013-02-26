@@ -222,6 +222,7 @@ form exec_request using body changing code type i reason type string.
 
 * Set up HTTP request
   request->set_method( if_http_entity=>co_request_method_post ).
+  request->set_content_type( 'text/xml' ). "Thanks Ken Kirby
   request->set_cdata( body ).
 
   data: extract type text100.
