@@ -111,6 +111,12 @@ form execute_query using p_request.
 
   clear: code, reason.
 
+* Set request URI
+  call method cl_http_utility=>set_request_uri
+    exporting
+      request = request
+      uri     = p_request.
+
 * Set up HTTP request
   request->set_method( if_http_entity=>co_request_method_get ).
 
@@ -206,9 +212,9 @@ initialization.
   endif.
   sbut = 'Search'.
   perform initialize_client.
-* TODO - do an initial call (ping) to the server
-* For now we just show a green light if the client could be instantiated
-  perform execute_query using '/admin/ping'.
+* Ping the specific collection via its admin interface to check it is up and running
+  concatenate path '/admin/ping' into path.
+  perform execute_query using path.
   if code = 200.
     concatenate '@5B@' hostport into info separated by space.
     index_available = abap_true.
@@ -306,11 +312,7 @@ form do_search .
   replace '#{QUERY}' with p_query into q.
   replace '#{START}' with start into q.
   replace '#{ROWS}' with rows into q.
-* Set request URI
-  call method cl_http_utility=>set_request_uri
-    exporting
-      request = request
-      uri     = q.
+
   perform execute_query using q.
 
 * Check for errors
